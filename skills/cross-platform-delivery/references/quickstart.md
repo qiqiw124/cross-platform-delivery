@@ -33,5 +33,17 @@ frontend_repo: /path/to/frontend
 backend_repo: /path/to/backend
 client_repo: /path/to/client
 
-基于当前改动，帮我做一轮跨端 review，并补 shared memory 和验收清单
+基于当前改动，帮我做一轮跨端 review，并补 shared spec 和验收清单
+```
+
+## 4. 复杂需求 Spec 目录
+```text
+使用 $cross-platform-delivery
+
+frontend_repo: /path/to/frontend
+backend_repo: /path/to/backend
+client_repo: /path/to/client
+
+需求：这个需求状态机复杂，请按 spec/ 目录模式输出
+重点：拆成 overview、rules、tracking、acceptance
 ```

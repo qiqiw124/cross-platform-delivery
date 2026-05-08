@@ -7,8 +7,8 @@ backend_repo: /work/member-service
 client_repo: /work/atourlife-ios
 
 design: figma link
-requirement: 会员页新增营销弹窗入口
-api: /member/popup/config
+requirement: 业务页面新增营销弹窗入口
+api: /activity/popup/config
 tracking: 曝光、点击、关闭
 ```
 
@@ -18,7 +18,7 @@ tracking: 曝光、点击、关闭
 3. 跨端映射表
 4. 仓库归属表
 5. 交付方案
-6. shared memory / repo memory 建议
+6. shared spec / repo spec 建议
 7. 联调方案
 8. 验收清单
 
@@ -31,7 +31,7 @@ tracking: 曝光、点击、关闭
 | 空值兜底 | owner | owner | owner | 三端必须统一 |
 
 ## Key Review Points
-- shared memory 是否已经沉淀统一字段定义
-- repo memory 是否补了各端实现细节
+- shared spec 是否已经沉淀统一字段定义
+- repo spec 是否补了各端实现细节
 - ownership 是否明确到“谁改、谁验、谁兜底”
 - 真接口和 mock 联调路径是否都存在

@@ -1,6 +1,6 @@
-# Repo Memory Template
+# Repo Spec Template
 
-适用于单个仓库内记录实现细节，与 shared memory 配套使用。
+适用于单个仓库内记录实现约束，与 shared spec 配套使用。
 
 ## 1. Scope
 - 仓库名：
@@ -17,7 +17,7 @@
 - 缓存/线程限制
 - 兼容逻辑
 
-## 4. Implementation Notes
+## 4. Implementation Contract
 - 数据映射方式
 - 本地状态处理
 - 埋点落点

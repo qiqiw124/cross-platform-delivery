@@ -22,8 +22,8 @@ tracking: tracking spec
 | Tracking trigger | owner | - | owner | Trigger timing must match |
 | Empty fallback | owner | owner | owner | Must align |
 
-## Shared Memory
-推荐单独维护一份 shared memory，记录：
+## Shared Spec
+推荐单独维护一份 shared spec，记录：
 - 统一业务背景
 - 统一字段定义
 - 状态机口径
@@ -31,8 +31,8 @@ tracking: tracking spec
 - 联调规则
 - 验收标准
 
-## Repo Memory
-每个仓库自己的 memory 记录：
+## Repo Spec
+每个仓库自己的 spec 记录：
 - 实现文件路径
 - 生命周期或框架限制
 - 本地缓存/线程/状态处理

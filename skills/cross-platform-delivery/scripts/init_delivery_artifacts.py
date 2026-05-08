@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate lightweight delivery artifacts for cross-platform alignment.
+Generate delivery artifacts for cross-platform alignment.
 
 Usage:
   python3 scripts/init_delivery_artifacts.py --name websocket-popup
@@ -20,13 +20,21 @@ MAPPING_TEMPLATE = """# Mapping
 """
 
 
-MEMORY_TEMPLATE = """# Business Memory
+SPEC_TEMPLATE = """# Spec
 
 ## Background
 - 
 
+## Scope
+- 
+
 ## Entry
 - 
+
+## Source of Truth
+- code:
+- api/schema:
+- spec owner:
 
 ## Core Models
 - 
@@ -72,6 +80,74 @@ OWNERSHIP_TEMPLATE = """# Ownership
 """
 
 
+SPEC_DIR_FILES = {
+    "overview.md": """# Overview
+
+## Background
+- 
+
+## Scope
+- 
+
+## Entry
+- 
+
+## Source of Truth
+- code:
+- api/schema:
+- spec owner:
+
+## Core Models
+- 
+""",
+    "rules.md": """# Rules
+
+## Display Rules
+- 
+
+## Interaction Rules
+- 
+
+## State Machine
+- 
+
+## Idempotency / Dedup
+- 
+
+## Fallback / Degrade
+- 
+""",
+    "tracking.md": """# Tracking
+
+## Events
+- 
+
+## Trigger Timing
+- 
+
+## Field Sources
+- 
+
+## No-report Conditions
+- 
+""",
+    "acceptance.md": """# Acceptance
+
+## Covered
+- 
+
+## Risks
+- 
+
+## Minimum Regression Path
+- 
+
+## Joint Debug Cases
+- 
+""",
+}
+
+
 def write_file(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     if not path.exists():
@@ -86,12 +162,23 @@ def main() -> None:
         default="artifacts",
         help="Output directory relative to current working directory",
     )
+    parser.add_argument(
+        "--spec-mode",
+        choices=("flat", "dir"),
+        default="flat",
+        help="Generate a single spec.md file or a spec/ directory template",
+    )
     args = parser.parse_args()
 
     root = Path.cwd() / args.output_dir / args.name
     write_file(root / "mapping.md", MAPPING_TEMPLATE)
-    write_file(root / "memory.md", MEMORY_TEMPLATE)
-    write_file(root / "acceptance.md", ACCEPTANCE_TEMPLATE)
+    if args.spec_mode == "flat":
+        write_file(root / "spec.md", SPEC_TEMPLATE)
+        write_file(root / "acceptance.md", ACCEPTANCE_TEMPLATE)
+    else:
+        spec_root = root / "spec"
+        for filename, content in SPEC_DIR_FILES.items():
+            write_file(spec_root / filename, content)
     write_file(root / "ownership.md", OWNERSHIP_TEMPLATE)
     print(root)
 
