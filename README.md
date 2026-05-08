@@ -1,12 +1,12 @@
 # cross-platform-delivery
 
-`cross-platform-delivery` is a reusable Codex skill for cross frontend/backend/client delivery alignment.
+`cross-platform-delivery` is a portable multi-agent skill repository for cross frontend, backend, and client delivery alignment.
 
 It is designed for:
 
 - new feature delivery across multiple ends
-- cross-platform field/state/tracking alignment
-- joint debugging
+- cross-platform field, state, and tracking alignment
+- joint debugging across repos
 - shared memory and repo memory maintenance
 - cross-end review and acceptance checklist generation
 
@@ -22,17 +22,19 @@ skills/
     scripts/
 ```
 
-This repository uses the `skills/` layout so it can be installed as a multi-skill style repository, even though it currently contains one skill.
+This repository follows the `skills/` layout so it can be installed by compatible skill installers and mapped into different agent skill directories.
 
 ## Install
 
-If this repository is published to GitHub, install with:
+Install from GitHub with:
 
 ```bash
-npx skills add https://github.com/<owner>/<repo> --skill cross-platform-delivery
+npx skills add https://github.com/qiqiw124/cross-platform-delivery.git --skill cross-platform-delivery
 ```
 
-If the repository is imported into your local Codex skills directory manually, copy:
+The installer may ask which local agent skill directory to use. That selection only affects the local install target and does not change the portability of this repository.
+
+If you want to install manually for Codex, copy:
 
 ```text
 skills/cross-platform-delivery
@@ -46,14 +48,14 @@ to:
 
 ## What This Skill Does
 
-The skill acts as a delivery orchestrator rather than an end-specific implementation skill.
+This skill acts as a delivery orchestrator rather than an end-specific implementation skill.
 
-It helps Codex:
+It helps the agent:
 
 - validate required inputs before coding
 - search existing memory and reusable logic first
-- produce field/state/tracking mapping tables
-- define repo ownership across frontend/backend/client
+- produce field, state, and tracking mapping tables
+- define repo ownership across frontend, backend, and client
 - drive implementation and joint-debug flow in small steps
 - maintain shared business memory and per-repo memory
 - run cross-end review and output acceptance checklists
@@ -94,16 +96,17 @@ client_repo: /path/to/client
 - `examples/`
 - `scripts/init_delivery_artifacts.py`
 
-## Publish Steps
+## Recommended Published Contents
 
-1. Create a new GitHub repository.
-2. Copy the contents of this folder into that repository.
-3. Commit and push.
-4. Verify the skill path is `skills/cross-platform-delivery/SKILL.md`.
-5. Install with `npx skills add https://github.com/<owner>/<repo> --skill cross-platform-delivery`.
+For a clean public repository, keep:
+
+- `README.md`
+- `skills/cross-platform-delivery/**`
+
+Local installer artifacts such as `.agents/` or `skills-lock.json` do not need to be committed to the public repository.
 
 ## Notes
 
-- `agents/openai.yaml` is included for Codex UI metadata.
+- `agents/openai.yaml` is included for Codex and compatible UI metadata.
 - Keep the skill name stable as `cross-platform-delivery`.
 - When updating business rules or workflows, update `SKILL.md` and the relevant reference files together.
