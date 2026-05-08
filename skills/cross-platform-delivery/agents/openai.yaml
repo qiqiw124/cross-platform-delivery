@@ -1,0 +1,4 @@
+interface:
+  display_name: "跨端交付"
+  short_description: "前后端客户端通用的对齐、联调、memory与CR"
+  default_prompt: "使用 $cross-platform-delivery 先做输入门禁、复用检索和跨端映射，再输出联调方案、memory维护结果、代码审查结果与验收清单。"
