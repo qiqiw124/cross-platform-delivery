@@ -22,6 +22,22 @@ tracking: 曝光、点击、关闭
 7. 联调方案
 8. 验收清单
 
+## Parallel Execution Prompt
+```text
+使用 $cross-platform-delivery
+
+frontend_repo: /work/web-member
+backend_repo: /work/member-service
+client_repo: /work/atourlife-ios
+
+design: figma link
+requirement: 业务页面新增营销弹窗入口
+api: /activity/popup/config
+tracking: 曝光、点击、关闭
+
+请先串行完成输入门禁、共享字段框架和冲突识别，再按 frontend / backend / client 三个仓库并行拆分 task 推进，最后统一收口输出映射表、仓库归属表、shared spec / repo spec 建议、联调方案、风险和验收清单。
+```
+
 ## Sample Ownership Table
 | Item | Frontend Repo | Backend Repo | Client Repo | Notes |
 | --- | --- | --- | --- | --- |

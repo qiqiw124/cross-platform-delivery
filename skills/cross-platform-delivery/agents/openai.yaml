@@ -1,4 +1,4 @@
 interface:
   display_name: "跨端交付"
   short_description: "前后端客户端通用的对齐、联调、spec与CR"
-  default_prompt: "使用 $cross-platform-delivery 先做输入门禁、代码与spec检索、跨端映射，再输出联调方案、spec维护结果、代码审查结果与验收清单。"
+  default_prompt: "使用 $cross-platform-delivery 先串行完成输入门禁、代码与spec检索、跨端映射，再按仓库或检查主题并行拆分 task，最后统一输出联调方案、spec维护结果、代码审查结果与验收清单。"

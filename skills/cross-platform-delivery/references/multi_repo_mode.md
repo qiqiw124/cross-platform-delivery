@@ -13,6 +13,21 @@ api: api doc link
 tracking: tracking spec
 ```
 
+## Parallel Execution Guidance
+
+- 推荐先由总控串行完成输入门禁、共享字段框架和冲突识别。
+- 进入实现或验证阶段后，可按 `frontend_repo`、`backend_repo`、`client_repo` 三个分支并行推进。
+- 并行分支适合处理：
+- 各仓库代码检索与复用点盘点
+- 各仓库实现细节与局部风险
+- 各仓库回归范围与验证结果
+- 不适合并行独立裁决的内容：
+- 统一字段定义
+- 统一状态机口径
+- 统一埋点来源
+- shared spec 最终内容
+- 建议在并行分支结束后，统一回到总控输出一份共享映射表和仓库归属表。
+
 ## Ownership Table
 
 | Item | Frontend Repo | Backend Repo | Client Repo | Notes |
