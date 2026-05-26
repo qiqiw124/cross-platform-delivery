@@ -22,7 +22,26 @@ metadata:
 # Cross Platform Delivery
 
 ## Overview
+
 统一前端、后端、客户端的需求交付流程：先检查输入、再读真实代码和契约；先对齐 spec、再推进实现；始终输出可联调、可审查、可回归的标准产物。
+
+### 跨平台兼容性说明
+
+本 Skill 是**平台无关的通用跨端交付流程规范**，不绑定任何 AI Agent 平台。所有主流 Agent 都能使用：
+
+| AI Agent 平台 | 适配方式 |
+|---|---|
+| Hermes | 原生支持，直接通过 skill 机制加载 |
+| Claude Code (Anthropic) | 作为系统提示词 / 自定义指令加载 |
+| Codex (OpenAI) | 作为 Agent 系统提示词加载 |
+| OpenAI Agents SDK | 作为 agent 工具/指令集加载 |
+| Cursor / Windsurf / VS Code | 作为全局自定义指令 / .cursorrules 加载 |
+| Continue / Devin / 任何 AI 编程助手 | 作为工作流规范加载 |
+
+设计原则：
+- **流程优先，工具次之**：核心流程（检测→对齐→裁决→交接→重入）是通用的，不依赖特定平台工具
+- **平台专属能力标注**：所有依赖特定平台的功能都用 `[平台名 专属]` 标注，通用实现都有无平台版本的降级方案
+- **无代码侵入**：所有产物都是纯 Markdown 文件，不依赖任何专有格式
 
 ## When to Use
 - 需求同时涉及前端、后端、客户端中的两端及以上。
@@ -42,8 +61,12 @@ metadata:
 ### 检测范围
 - 优先扫 `cwd`（当前工作目录）
 - 若 `cwd` 只含单端，扩展扫同级目录（`../` 下的一级子目录）
-- **Memory 感知**：检索 Hermes memory 中是否记录过多平台项目（如「YouWozai 项目有 iOS + Android + uniCloud 三端」）。若有，视为跨端场景，自动触发本 skill。
-- **Active-plan 感知**：读取 `~/.hermes/active-plan`，若指向的 spec 目录包含多仓库归属或跨端映射表，自动触发。
+- **记忆感知**：检索 agent 持久化记忆中是否记录过多平台项目（如「YouWozai 项目有 iOS + Android + uniCloud 三端」）。若有，视为跨端场景，自动触发本 skill。
+  - [Hermes 专属]：Hermes memory 机制
+  - [通用实现]：任何 agent 的持久化记忆/全局上下文/知识库
+- **活跃 spec 指针感知**：读取活跃 spec 指针文件，若指向的 spec 目录包含多仓库归属或跨端映射表，自动触发。
+  - [Hermes 专属]：`~/.hermes/active-plan`
+  - [通用实现]：任意约定的全局指针文件路径
 
 ### 平台信号（满足任一即视为检测到对应端）
 
@@ -122,7 +145,7 @@ metadata:
 
 | 产物 | 位置约定 | 示例 |
 | --- | --- | --- |
-| shared spec / flat spec.md | `<spec_root>/<project>/<requirement>/`（未配置时回退到项目 `.spec/`） | `/Users/wangqiqi/Desktop/sproject/.spec/sos-alert/` |
+| shared spec / flat spec.md | `<spec_root>/<project>/<requirement>/` | `/Users/wangqiqi/Desktop/spec-history/youwozai/sos-alert/` |
 | 映射表 mapping.md | 同上目录 | `<spec_root>/<project>/<requirement>/mapping.md` |
 | 验收清单 acceptance.md | 同上目录 | `<spec_root>/<project>/<requirement>/acceptance.md` |
 | 仓库归属表 ownership.md | 同上目录 | `<spec_root>/<project>/<requirement>/ownership.md` |
@@ -131,16 +154,22 @@ metadata:
 | 复杂 spec/ 目录模式 | `<spec_root>/<project>/<requirement>/spec/` | `spec/overview.md`, `spec/rules.md`, `spec/tracking.md`, `spec/acceptance.md` |
 
 **spec_root 确定规则：**
-1. 若 `~/.hermes/active-plan` 文件存在且指向一个有效目录 → 以该目录为 spec_root。
-2. 若 memory 中记录了用户的 spec 目录偏好（如「spec 文件放在 `/Users/wangqiqi/Desktop/spec-history/`」）→ 以该路径为 spec_root。
+1. 若 **活跃 spec 指针文件**存在且指向一个有效目录 → 以该目录为 spec_root。
+   - [Hermes 专属]：默认为 `~/.hermes/active-plan`
+   - [通用实现]：可自定义任意路径，如 `~/.agent/active-plan`、项目根目录下 `.active-plan` 等
+2. 若 agent 持久化记忆中记录了用户的 spec 目录偏好（如「spec 文件放在 `/Users/wangqiqi/Desktop/spec-history/`」）→ 以该路径为 spec_root。
+   - [Hermes 专属]：Hermes memory 机制
+   - [通用实现]：任何 agent 的持久化记忆/全局上下文机制
 3. 若以上都不存在 → 回退到项目根目录下：以各端仓库的共同父目录或 cwd 作为锚点，在其中创建 `.spec/<requirement>/` 作为 spec_root。例如多端项目都放在 `/Users/wangqiqi/Desktop/sproject/` 下，则 spec_root = `/Users/wangqiqi/Desktop/sproject/.spec/<requirement>/`。
-4. 若连项目目录都无法确定（如零散仓库无共同父目录）→ 询问用户指定 spec_root，并写入 memory。
+4. 若连项目目录都无法确定（如零散仓库无共同父目录）→ 询问用户指定 spec_root，并写入持久化记忆。
 5. spec_root 一旦确定，本轮所有产物都写入该目录下；中途不切换。
 
-**active-plan 管理：**
-- `~/.hermes/active-plan` 是一个纯文本文件，内容为当前活跃的 spec 目录绝对路径。
+**活跃 spec 指针文件管理：**
+- 这是一个纯文本文件，内容为当前活跃的 spec 目录绝对路径。
 - 开始新需求时，写入该路径；需求关闭后，清空文件内容。
 - 下次会话启动时，Auto-Detection 读取此文件判断是否有活跃的跨端上下文。
+- [Hermes 专属]：默认路径 `~/.hermes/active-plan`
+- [通用实现]：任意 agent 都可以约定一个全局路径或项目级路径
 
 ## Task Model
 - 默认执行模型是"串行总控 + 并行分支 + 串行收口"。
@@ -165,10 +194,14 @@ metadata:
 - worker 结果之间有强依赖（先串行对齐，再考虑并行）
 
 ### delegate_task 使用规则
-- 使用 Hermes 的 `delegate_task` 工具，`role='leaf'`。
-- 每个 worker 的 `context` 必须包含：仓库绝对路径、当前已知的字段/接口契约、禁止事项。
+- 使用 agent 的子 agent/并行执行工具，对应实现：
+  - [Hermes 专属]：`delegate_task` 工具，`role='leaf'`
+  - [Claude Code 专属]：@subagent 语法
+  - [OpenAI Agents 专属]：使用多 agent 并发 API
+  - [Cursor / VSCode 专属]：使用多文件并行编辑或多光标批量执行
+- 每个 worker / 子 agent 的上下文必须包含：仓库绝对路径、当前已知的字段/接口契约、禁止事项。
 - worker 返回后，总控必须逐一验证关键结果（如文件路径是否存在），不能盲信。
-- 并行 worker 数量默认 ≤3，对应 `delegation.max_concurrent_children` 默认值。
+- 并行 worker 数量默认 ≤3，不要超过平台的并发上限。
 
 ## Workflow
 0. 自动检测多端环境。
